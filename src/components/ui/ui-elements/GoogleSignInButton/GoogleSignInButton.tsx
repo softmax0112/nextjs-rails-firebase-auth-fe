@@ -1,19 +1,45 @@
 import Link from 'next/link';
 import { ReactNode, FC } from 'react';
+import clsx from 'clsx';
 
 import GoogleIcon from '@/public/img/google-icon.svg';
 
-type Props = {
-  children: ReactNode;
+const variants = {
+  primary: 'bg-blue-600 text-white',
+  inverse: 'bg-white text-blue-600',
+  danger: 'bg-red-600 text-white',
 };
 
-export const GoogleSignInButton: FC<Props> = ({ children }) => {
+const sizes = {
+  sm: 'py-2 px-4 text-sm',
+  md: 'py-2 px-6 text-md',
+  lg: 'py-3 px-8 text-lg',
+};
+
+type Props = {
+  children: ReactNode;
+  variant?: keyof typeof variants;
+  size?: keyof typeof sizes;
+  className?: string;
+};
+
+export const GoogleSignInButton: FC<Props> = ({
+  children,
+  variant = 'primary',
+  size = 'md',
+  className = '',
+}) => {
   return (
     <Link
       href='/auth-redirect?redirect_uri=/'
-      className='flex h-11 sm:h-14 w-full items-center justify-center rounded-full border border-indigo text-base font-semibold leading-none text-black'
+      className={clsx(
+        'flex justify-center items-center border border-gray-300 disabled:opacity-70 disabled:cursor-not-allowed rounded-md shadow-sm font-medium focus:outline-none hover:opacity-80',
+        variants[variant],
+        sizes[size],
+        className,
+      )}
     >
-      <GoogleIcon className='fill-current transition-colors text-gray-700 hover:text-orange-500 h-6 w-6' />
+      <GoogleIcon className='fill-current transition-colors text-gray-700 hover:text-orange-500 h-6 w-6 mr-2' />
       {children}
     </Link>
   );

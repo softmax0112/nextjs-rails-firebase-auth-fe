@@ -2,6 +2,7 @@ import type { NextPage } from 'next';
 import { Form } from '@/components/functional/Form';
 import { InputControl } from '@/components/functional/InputControl';
 import { Button } from '@/components/ui/ui-elements/Button';
+import { GoogleSignInButton } from '@/components/ui/ui-elements/GoogleSignInButton';
 import { z } from 'zod';
 
 export const validationSchema = z.object({
@@ -78,9 +79,7 @@ const SignUpPage: NextPage = () => {
                     会員登録
                   </Button>
                   <div className='h-5'></div>
-                  <Button isLoading={formState.isSubmitting} type='submit' className='w-full'>
-                    会員登録
-                  </Button>
+                  <GoogleSignInButton variant='inverse'>Googleで始める</GoogleSignInButton>
                 </div>
               </div>
             </>
