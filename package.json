@@ -41,6 +41,7 @@
     "react-dom": "18.2.0",
     "react-hook-form": "^7.41.0",
     "recoil": "0.7.6",
+    "recoil-persist": "^4.2.0",
     "zod": "^3.20.2"
   },
   "devDependencies": {

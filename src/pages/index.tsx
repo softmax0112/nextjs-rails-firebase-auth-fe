@@ -1,9 +1,15 @@
 import type { NextPage } from 'next';
-
-import { Top } from '@/components/page/Top';
+import { useAuth } from '@/globalStates/userState';
 
 const Home: NextPage = () => {
-  return <Top />;
+  const { isLoading, currentUser } = useAuth();
+
+  return (
+    <div>
+      <h1>top page</h1>
+      {isLoading ? <p>Loading..</p> : <p>{currentUser?.name}</p>}
+    </div>
+  );
 };
 
 export default Home;
