@@ -1,7 +1,7 @@
 import { useAuth } from '@/globalStates/userState';
-import { ReactElement } from 'react';
+import { NextComponentType, NextPageContext } from 'next';
 
-const WithAuth = (WrappedComponent: () => ReactElement) => {
+const WithAuth = (WrappedComponent: NextComponentType<NextPageContext, any, {}>) => {
   return () => {
     useAuth();
 

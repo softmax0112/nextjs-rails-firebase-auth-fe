@@ -7,7 +7,7 @@ import {
   onAuthStateChanged,
   signInWithRedirect,
 } from 'firebase/auth';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { authenticateUser } from '@/lib/auth';
 
 type UserState = {

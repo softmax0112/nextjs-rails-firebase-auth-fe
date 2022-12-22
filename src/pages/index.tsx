@@ -1,7 +1,8 @@
 import { useUserState } from '@/globalStates/userState';
 import WithAuth from '@/components/functional/WithAuth/WithAuth';
+import { NextPage } from 'next';
 
-const Home = () => {
+const Home: NextPage = () => {
   const currentUser = useUserState();
 
   return (
