@@ -9,7 +9,6 @@ import {
 } from 'firebase/auth';
 import { useEffect, useState } from 'react';
 import { authenticateUser } from '@/lib/auth';
-import { recoilPersist } from 'recoil-persist';
 
 type UserState = {
   id: number;

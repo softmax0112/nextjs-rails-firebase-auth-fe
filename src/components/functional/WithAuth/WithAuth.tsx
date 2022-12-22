@@ -1,12 +1,12 @@
-import { FC, ReactNode } from 'react';
 import { useAuth } from '@/globalStates/userState';
+import { ReactElement } from 'react';
 
-type Props = {
-  children: ReactNode;
+const WithAuth = (WrappedComponent: () => ReactElement) => {
+  return () => {
+    useAuth();
+
+    return <WrappedComponent />;
+  };
 };
 
-export const WithAuth: FC<Props> = ({ children }) => {
-  useAuth();
-
-  return <>{children}</>;
-};
+export default WithAuth;
