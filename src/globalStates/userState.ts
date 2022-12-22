@@ -2,25 +2,13 @@ import { atom, useRecoilValue, useSetRecoilState } from 'recoil';
 import { useRouter } from 'next/router';
 import { auth } from '@/lib/firebase';
 import {
-  applyActionCode,
-  checkActionCode,
-  confirmPasswordReset,
-  createUserWithEmailAndPassword,
-  EmailAuthProvider,
   getRedirectResult,
   GoogleAuthProvider,
   onAuthStateChanged,
-  reauthenticateWithCredential,
-  sendEmailVerification,
-  sendPasswordResetEmail,
-  signInWithEmailAndPassword,
   signInWithRedirect,
-  signOut,
-  updateEmail,
-  verifyPasswordResetCode,
 } from 'firebase/auth';
 import { useEffect, useState } from 'react';
-import { verifyIdToken } from '@/lib/auth';
+import { authenticateUser } from '@/lib/auth';
 import { recoilPersist } from 'recoil-persist';
 
 type UserState = {
@@ -30,11 +18,9 @@ type UserState = {
   uid: string;
 };
 
-const { persistAtom } = recoilPersist();
 const userState = atom<UserState | null>({
   key: 'userState',
   default: null,
-  effects_UNSTABLE: [persistAtom],
 });
 
 // userStateのgetter
@@ -51,6 +37,7 @@ export const useUserStateMutators = () => {
 
 export const useSignInWithGoogle = () => {
   const router = useRouter();
+  const { setUserState } = useUserStateMutators();
 
   useEffect(() => {
     if (!router.isReady) {
@@ -72,6 +59,17 @@ export const useSignInWithGoogle = () => {
       } else {
         // result がある時は認証済み
         // オープンリダイレクタ等を回避するために検証が必要だが、ここでは省略
+        const token = await result.user.getIdToken();
+        const res = await authenticateUser(token);
+        const { id, name, email, uid } = res;
+
+        setUserState({
+          id,
+          name,
+          email,
+          uid,
+        });
+
         const redirectUri = router.query['redirect_uri'] as string | undefined;
         router.push(redirectUri || '/');
       }
@@ -81,16 +79,19 @@ export const useSignInWithGoogle = () => {
 };
 
 export const useAuth = () => {
-  const [isLoading, setIsLoading] = useState(true);
+  const router = useRouter();
   const { setUserState } = useUserStateMutators();
-  const currentUser = useUserState();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      if (user === null) return;
+      if (!user) {
+        router.push('/signin');
+        setUserState(null);
+        return;
+      }
 
       const token = await user.getIdToken();
-      const res = await verifyIdToken(token);
+      const res = await authenticateUser(token);
       const { id, name, email, uid } = res;
 
       setUserState({
@@ -100,15 +101,9 @@ export const useAuth = () => {
         uid,
       });
     });
-    setIsLoading(false);
 
     return () => {
       unsubscribe();
     };
   }, []);
-
-  return {
-    isLoading,
-    currentUser,
-  };
 };

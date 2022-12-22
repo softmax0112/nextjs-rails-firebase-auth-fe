@@ -1,14 +1,17 @@
 import type { NextPage } from 'next';
-import { useAuth } from '@/globalStates/userState';
+import { useUserState } from '@/globalStates/userState';
+import { WithAuth } from '@/components/functional/WithAuth';
 
 const Home: NextPage = () => {
-  const { isLoading, currentUser } = useAuth();
+  const currentUser = useUserState();
 
   return (
-    <div>
-      <h1>top page</h1>
-      {isLoading ? <p>Loading..</p> : <p>{currentUser?.name}</p>}
-    </div>
+    <WithAuth>
+      <div>
+        <h1>top page</h1>
+        <p>{currentUser?.name}</p>
+      </div>
+    </WithAuth>
   );
 };
 
