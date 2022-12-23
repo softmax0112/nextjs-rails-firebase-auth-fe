@@ -1,14 +1,21 @@
 import { NextResponse, NextRequest } from 'next/server';
 
-export default function middleware(req: NextRequest) {
-  const verify = req.cookies.get('loggedIn');
-  const url = req.url;
+export function middleware(req: NextRequest) {
+  const { cookies, nextUrl, url } = req;
+  const isLoggedIn = cookies.get('isLoggedIn');
+  const isAuthUrl =
+    nextUrl.pathname.includes('/signin') ||
+    nextUrl.pathname.includes('/signup') ||
+    nextUrl.pathname.includes('/auth-redirect');
 
-  if (!verify && url.includes('/')) {
-    return NextResponse.redirect(new URL('/signin', req.url));
+  // ログインしていなかったら「/signin」にリダイレクトさせる
+  if (!isLoggedIn && !isAuthUrl) {
+    const baseURL = nextUrl.clone();
+    return NextResponse.redirect(new URL('/signin', baseURL));
   }
 
-  if (verify && url === 'http://localhost:8080/') {
-    return NextResponse.redirect(new URL('/', req.url));
+  // ログイン成功してたら「/signin, /signup」にはアクセスできない、前のURLにリダイレクトさせる
+  if (isLoggedIn && isAuthUrl) {
+    return NextResponse.redirect(new URL('/', url));
   }
 }

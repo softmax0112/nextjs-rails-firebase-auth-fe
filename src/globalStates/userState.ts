@@ -108,7 +108,7 @@ export const useAuth = () => {
       if (!user) {
         router.push('/signin');
         setUserState(null);
-        Cookies.remove('loggedIn');
+        Cookies.remove('isLoggedIn');
         return;
       }
 
@@ -122,7 +122,7 @@ export const useAuth = () => {
         email,
         uid,
       });
-      Cookies.set('loggedIn', 'true');
+      Cookies.set('isLoggedIn', 'true');
     });
 
     return () => {
