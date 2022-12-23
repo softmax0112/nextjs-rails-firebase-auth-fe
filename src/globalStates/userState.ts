@@ -38,7 +38,6 @@ export const useUserStateMutators = () => {
 
 export const useSignInWithGoogle = () => {
   const router = useRouter();
-  const { setUserState } = useUserStateMutators();
 
   useEffect(() => {
     if (!router.isReady) {
@@ -60,17 +59,8 @@ export const useSignInWithGoogle = () => {
       } else {
         // result がある時は認証済み
         // オープンリダイレクタ等を回避するために検証が必要だが、ここでは省略
-        const token = await result.user.getIdToken();
-        const res = await authenticateUser(token);
-        const { id, name, email, uid } = res;
 
-        setUserState({
-          id,
-          name,
-          email,
-          uid,
-        });
-
+        Cookies.set('isLoggedIn', 'true');
         const redirectUri = router.query['redirect_uri'] as string | undefined;
         router.push(redirectUri || '/');
       }
@@ -122,7 +112,6 @@ export const useAuth = () => {
         email,
         uid,
       });
-      Cookies.set('isLoggedIn', 'true');
     });
 
     return () => {

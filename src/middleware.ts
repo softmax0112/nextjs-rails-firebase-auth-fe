@@ -4,14 +4,20 @@ export function middleware(req: NextRequest) {
   const { cookies, nextUrl, url } = req;
   const isLoggedIn = cookies.get('isLoggedIn');
   const isAuthUrl =
-    nextUrl.pathname.includes('/signin') ||
-    nextUrl.pathname.includes('/signup') ||
-    nextUrl.pathname.includes('/auth-redirect');
+    nextUrl.pathname.startsWith('/signin') ||
+    nextUrl.pathname.startsWith('/signup') ||
+    nextUrl.pathname.startsWith('/auth-redirect');
+
+  if (
+    nextUrl.pathname.startsWith('/_next') ||
+    nextUrl.pathname.startsWith('/api') ||
+    nextUrl.pathname.startsWith('/static')
+  )
+    return NextResponse.next();
 
   // ログインしていなかったら「/signin」にリダイレクトさせる
   if (!isLoggedIn && !isAuthUrl) {
-    const baseURL = nextUrl.clone();
-    return NextResponse.redirect(new URL('/signin', baseURL));
+    return NextResponse.redirect(new URL('/signin', url));
   }
 
   // ログイン成功してたら「/signin, /signup」にはアクセスできない、前のURLにリダイレクトさせる
