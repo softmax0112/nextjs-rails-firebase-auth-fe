@@ -1,12 +1,12 @@
 import { useAuth } from '@/globalStates/userState';
-import { NextComponentType, NextPageContext } from 'next';
+import { FC, ReactNode } from 'react';
 
-const WithAuth = (WrappedComponent: NextComponentType<NextPageContext, any, {}>) => {
-  return () => {
-    useAuth();
-
-    return <WrappedComponent />;
-  };
+type Props = {
+  children: ReactNode;
 };
 
-export default WithAuth;
+export const WithAuth: FC<Props> = ({ children }) => {
+  useAuth();
+
+  return <>{children}</>;
+};

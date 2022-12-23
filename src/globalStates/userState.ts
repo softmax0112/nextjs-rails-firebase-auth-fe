@@ -6,9 +6,11 @@ import {
   GoogleAuthProvider,
   onAuthStateChanged,
   signInWithRedirect,
+  signOut,
 } from 'firebase/auth';
 import { useEffect } from 'react';
 import { authenticateUser } from '@/lib/auth';
+import Cookies from 'js-cookie';
 
 type UserState = {
   id: number;
@@ -77,6 +79,26 @@ export const useSignInWithGoogle = () => {
   }, [router.query]);
 };
 
+export const useSignOut = () => {
+  const { setUserState } = useUserStateMutators();
+  const router = useRouter();
+
+  const logout = () => {
+    try {
+      signOut(auth).then(() => {
+        setUserState(null);
+        router.push('/signin');
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  return {
+    logout,
+  };
+};
+
 export const useAuth = () => {
   const router = useRouter();
   const { setUserState } = useUserStateMutators();
@@ -86,6 +108,7 @@ export const useAuth = () => {
       if (!user) {
         router.push('/signin');
         setUserState(null);
+        Cookies.remove('loggedIn');
         return;
       }
 
@@ -99,6 +122,7 @@ export const useAuth = () => {
         email,
         uid,
       });
+      Cookies.set('loggedIn', 'true');
     });
 
     return () => {
