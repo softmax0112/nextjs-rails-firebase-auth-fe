@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 
 export const middleware = (req: NextRequest) => {
   const { cookies, nextUrl, url } = req;
-  const isLoggedIn = cookies.get('isLoggedIn');
+  const isAuthenticated = cookies.get('isLoggedIn');
   const isAuthUrl =
     nextUrl.pathname.startsWith('/signin') ||
     nextUrl.pathname.startsWith('/signup') ||
@@ -18,12 +18,12 @@ export const middleware = (req: NextRequest) => {
   }
 
   // ログインしていなかったら「/signin」にリダイレクトさせる
-  if (!isLoggedIn && !isAuthUrl) {
+  if (!isAuthenticated && !isAuthUrl) {
     return NextResponse.redirect(new URL('/signin', url));
   }
 
   // ログイン成功してたら「/signin, /signup」にはアクセスできない、前のURLにリダイレクトさせる
-  if (isLoggedIn && isAuthUrl) {
+  if (isAuthenticated && isAuthUrl) {
     return NextResponse.redirect(new URL('/', url));
   }
 };

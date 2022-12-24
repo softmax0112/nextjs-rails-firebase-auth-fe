@@ -39,6 +39,7 @@ export const useUserStateMutators = () => {
 
 export const useSignInWithGoogle = () => {
   const router = useRouter();
+  const setUserState = useUserStateMutators();
 
   useEffect(() => {
     if (!router.isReady) {
@@ -61,7 +62,19 @@ export const useSignInWithGoogle = () => {
         // result がある時は認証済み
         // オープンリダイレクタ等を回避するために検証が必要だが、ここでは省略
 
+        const token = await result.user.getIdToken();
+        const res = await authenticateUser(token);
+        const { email, id, name, uid } = res;
+        const repositoryUser = {
+          id,
+          name,
+          email,
+          uid,
+        };
+        setUserState(repositoryUser);
         Cookies.set('isLoggedIn', 'true');
+        localStorage.setItem('currentUser', JSON.stringify(repositoryUser));
+
         const redirectUri = router.query['redirect_uri'] as string | undefined;
         router.push(redirectUri || '/');
       }
@@ -96,23 +109,47 @@ export const useAuth = () => {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      // 未ログインの場合
       if (!user) {
         router.push('/signin');
         setUserState(null);
+        localStorage.removeItem('currentUser');
         Cookies.remove('isLoggedIn');
         return;
       }
 
-      const token = await user.getIdToken();
-      const res = await authenticateUser(token);
-      const { email, id, name, uid } = res;
+      // 一度ログインに成功している場合は、localStorageにcurrentUserをsetし、その値をsetUserStateする
+      if (localStorage.getItem('currentUser')) {
+        const loggedInUser = JSON.parse(localStorage.getItem('currentUser') as string);
+        setUserState(loggedInUser);
+        return;
+      }
 
-      setUserState({
-        id,
-        name,
-        email,
-        uid,
-      });
+      // firebaseでログインが成功したら、以下の処理を行う
+      // 1. APIでfirebaseから返却されるtokenを検証
+      // 2. tokenの検証が成功したらDBにuserを保存し、APIがuserを返却してくれるので、resをsetUserStateする
+      // 3. ページリロードするたびに上記のAPIコールの処理が走ってしまうので、ログインに成功したら無駄なAPIコールを防ぐためresをlocalStorageにsetItemする → localStorageにcurrentUserがあればそれをsetUserStateすればよくなる
+      // 4. APIでfirebaseのtoken検証が失敗したらerrorに入るので、userStateを初期値に戻す、localStorageからcurrentUserをremoveする、cookieを削除する
+      try {
+        const token = await user.getIdToken();
+        const res = await authenticateUser(token);
+        const { email, id, name, uid } = res;
+        const repositoryUser = {
+          id,
+          name,
+          email,
+          uid,
+        };
+
+        setUserState(repositoryUser);
+        localStorage.setItem('currentUser', JSON.stringify(repositoryUser));
+      } catch (err) {
+        console.error(err);
+        router.push('/signin');
+        setUserState(null);
+        localStorage.removeItem('currentUser');
+        Cookies.remove('isLoggedIn');
+      }
     });
 
     return () => {
