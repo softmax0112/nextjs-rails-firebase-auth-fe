@@ -1,6 +1,6 @@
-import Link from 'next/link';
-import { ReactNode, FC } from 'react';
 import clsx from 'clsx';
+import Link from 'next/link';
+import type { FC,ReactNode } from 'react';
 
 import GoogleIcon from '@/public/img/google-icon.svg';
 
@@ -25,9 +25,9 @@ type Props = {
 
 export const GoogleSignInButton: FC<Props> = ({
   children,
-  variant = 'primary',
-  size = 'md',
   className = '',
+  size = 'md',
+  variant = 'primary',
 }) => {
   return (
     <Link

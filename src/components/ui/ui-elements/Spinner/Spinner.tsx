@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import { FC } from 'react';
+import type { FC } from 'react';
 
 const sizes = {
   sm: 'h-4 w-4',
@@ -19,7 +19,7 @@ export type Props = {
   className?: string;
 };
 
-export const Spinner: FC<Props> = ({ size = 'md', variant = 'primary', className = '' }) => {
+export const Spinner: FC<Props> = ({ className = '', size = 'md', variant = 'primary' }) => {
   return (
     <>
       <svg

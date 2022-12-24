@@ -1,6 +1,7 @@
-import { useSignOut, useUserState } from '@/globalStates/userState';
+import type { NextPage } from 'next';
+
 import { WithAuth } from '@/components/functional/WithAuth';
-import { NextPage } from 'next';
+import { useSignOut, useUserState } from '@/globalStates/userState';
 
 const Home: NextPage = () => {
   const currentUser = useUserState();

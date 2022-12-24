@@ -1,6 +1,7 @@
-import { NextResponse, NextRequest } from 'next/server';
+import type { NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
 
-export function middleware(req: NextRequest) {
+export const middleware = (req: NextRequest) => {
   const { cookies, nextUrl, url } = req;
   const isLoggedIn = cookies.get('isLoggedIn');
   const isAuthUrl =
@@ -12,8 +13,9 @@ export function middleware(req: NextRequest) {
     nextUrl.pathname.startsWith('/_next') ||
     nextUrl.pathname.startsWith('/api') ||
     nextUrl.pathname.startsWith('/static')
-  )
+  ) {
     return NextResponse.next();
+  }
 
   // ログインしていなかったら「/signin」にリダイレクトさせる
   if (!isLoggedIn && !isAuthUrl) {
@@ -24,4 +26,4 @@ export function middleware(req: NextRequest) {
   if (isLoggedIn && isAuthUrl) {
     return NextResponse.redirect(new URL('/', url));
   }
-}
+};

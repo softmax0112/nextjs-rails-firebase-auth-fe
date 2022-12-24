@@ -11,10 +11,10 @@ export type InputProps = {
 export const Input = ({
   error,
   inputRef,
-  type,
   name,
   onChange,
   placeholder,
+  type,
   value,
 }: InputProps & {
   inputRef?: Ref<HTMLInputElement>;
@@ -36,7 +36,7 @@ export const Input = ({
         type={type}
         placeholder={placeholder}
         className={clsx(
-          'w-full rounded-md border p-2 valid:ring-green-500 focus:ring-indigo',
+          'focus:ring-indigo w-full rounded-md border p-2 valid:ring-green-500',
           errorStyle,
         )}
       />

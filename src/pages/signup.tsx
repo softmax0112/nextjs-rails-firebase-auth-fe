@@ -1,9 +1,10 @@
 import type { NextPage } from 'next';
+import { z } from 'zod';
+
 import { Form } from '@/components/functional/Form';
 import { InputControl } from '@/components/functional/InputControl';
 import { Button } from '@/components/ui/ui-elements/Button';
 import { GoogleSignInButton } from '@/components/ui/ui-elements/GoogleSignInButton';
-import { z } from 'zod';
 
 export const validationSchema = z.object({
   email: z

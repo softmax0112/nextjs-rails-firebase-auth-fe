@@ -1,5 +1,6 @@
+import type { FC, ReactNode } from 'react';
+
 import { useAuth } from '@/globalStates/userState';
-import { FC, ReactNode } from 'react';
 
 type Props = {
   children: ReactNode;

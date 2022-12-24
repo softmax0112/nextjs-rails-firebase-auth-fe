@@ -1,6 +1,3 @@
-import { atom, useRecoilValue, useSetRecoilState } from 'recoil';
-import { useRouter } from 'next/router';
-import { auth } from '@/lib/firebase';
 import {
   getRedirectResult,
   GoogleAuthProvider,
@@ -8,9 +5,13 @@ import {
   signInWithRedirect,
   signOut,
 } from 'firebase/auth';
-import { useEffect } from 'react';
-import { authenticateUser } from '@/lib/auth';
 import Cookies from 'js-cookie';
+import { useRouter } from 'next/router';
+import { useEffect } from 'react';
+import { atom, useRecoilValue, useSetRecoilState } from 'recoil';
+
+import { authenticateUser } from '@/lib/auth';
+import { auth } from '@/lib/firebase';
 
 type UserState = {
   id: number;
@@ -33,7 +34,7 @@ export const useUserState = () => {
 export const useUserStateMutators = () => {
   const setUserState = useSetRecoilState(userState);
 
-  return { setUserState };
+  return setUserState;
 };
 
 export const useSignInWithGoogle = () => {
@@ -70,7 +71,7 @@ export const useSignInWithGoogle = () => {
 };
 
 export const useSignOut = () => {
-  const { setUserState } = useUserStateMutators();
+  const setUserState = useUserStateMutators();
   const router = useRouter();
 
   const logout = () => {
@@ -91,7 +92,7 @@ export const useSignOut = () => {
 
 export const useAuth = () => {
   const router = useRouter();
-  const { setUserState } = useUserStateMutators();
+  const setUserState = useUserStateMutators();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -104,7 +105,7 @@ export const useAuth = () => {
 
       const token = await user.getIdToken();
       const res = await authenticateUser(token);
-      const { id, name, email, uid } = res;
+      const { email, id, name, uid } = res;
 
       setUserState({
         id,
@@ -117,5 +118,6 @@ export const useAuth = () => {
     return () => {
       unsubscribe();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 };

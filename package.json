@@ -83,5 +83,9 @@
     "**/*.{json,md,mdx,css,html,yml,yaml,scss}": [
       "prettier --write ."
     ]
-  }
+  },
+  "main": "index.js",
+  "repository": "https://github.com/daichan2019/nextjs-rails-firebase-auth-frontend.git",
+  "author": "daichi_sato <daichiexperience@gmail.com>",
+  "license": "MIT"
 }

@@ -1,6 +1,7 @@
 import axios from 'axios';
-import { API_BASE_URL } from 'src/config';
 import { onAuthStateChanged } from 'firebase/auth';
+import { API_BASE_URL } from 'src/config';
+
 import { auth } from '@/lib/firebase';
 
 export const authenticateUser = async (token: string, name = '') => {
