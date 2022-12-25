@@ -5,9 +5,9 @@ export const middleware = (req: NextRequest) => {
   const { cookies, nextUrl, url } = req;
   const isAuthenticated = cookies.get('isLoggedIn');
   const isAuthUrl =
-    nextUrl.pathname.startsWith('/signin') ||
-    nextUrl.pathname.startsWith('/signup') ||
-    nextUrl.pathname.startsWith('/auth-redirect');
+    nextUrl.pathname === '/signin' ||
+    nextUrl.pathname === '/signup' ||
+    nextUrl.pathname === '/auth-redirect';
 
   if (
     nextUrl.pathname.startsWith('/_next') ||
@@ -18,6 +18,7 @@ export const middleware = (req: NextRequest) => {
   }
 
   // ログインしていなかったら「/signin」にリダイレクトさせる
+  // ログインしていないときは「/signin」「/signup」「/auth-redirect」にはアクセスできる
   if (!isAuthenticated && !isAuthUrl) {
     return NextResponse.redirect(new URL('/signin', url));
   }

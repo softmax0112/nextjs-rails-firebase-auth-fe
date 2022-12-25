@@ -72,7 +72,7 @@ export const useSignInWithGoogle = () => {
           uid,
         };
         setUserState(repositoryUser);
-        Cookies.set('isLoggedIn', 'true');
+        Cookies.set('isLoggedIn', 'true', { secure: true });
         localStorage.setItem('currentUser', JSON.stringify(repositoryUser));
 
         const redirectUri = router.query['redirect_uri'] as string | undefined;
