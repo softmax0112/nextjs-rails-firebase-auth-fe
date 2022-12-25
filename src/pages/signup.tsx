@@ -41,7 +41,7 @@ const SignUpPage: NextPage = () => {
     <div className='max-w-xl px-4 py-12 mx-auto'>
       <h2 className='text-2xl font-bold text-center'>会員登録</h2>
       <Form<SignUpFormValues, typeof validationSchema>
-        id='translate-form'
+        id='signup-form'
         onSubmit={async (data) => {
           console.log(data);
         }}

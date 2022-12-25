@@ -1,4 +1,5 @@
 import {
+  createUserWithEmailAndPassword,
   getRedirectResult,
   GoogleAuthProvider,
   onAuthStateChanged,
@@ -37,6 +38,24 @@ export const useUserStateMutators = () => {
   return setUserState;
 };
 
+export const useSignUp = () => {
+  const router = useRouter();
+
+  const signUpWithEmailAndPassword = async (email: string, password: string) => {
+    const user = await createUserWithEmailAndPassword(auth, email, password);
+
+    if (!user) {
+      return;
+    }
+
+    Cookies.set('isLoggedIn', 'true', { secure: true });
+    router.push('/');
+  };
+
+  return { signUpWithEmailAndPassword };
+};
+
+// signInWithRedirectによるsignup, signin
 export const useSignInWithGoogle = () => {
   const router = useRouter();
   const setUserState = useUserStateMutators();
